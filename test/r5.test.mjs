@@ -55,3 +55,13 @@ test('first attack check reads public data.json without credentials', async () =
     globalThis.fetch = originalFetch;
   }
 });
+
+test('stage 3 deployment manifest publishes actual routes and public issuer', () => {
+  const stage3 = { ...config, step: 3, allowedRoutes: ['GET /api/materials'],
+    identityProvider: { issuer: 'https://project.supabase.co/auth/v1', audience: 'authenticated',
+      jwksUrl: 'https://project.supabase.co/auth/v1/.well-known/jwks.json' } };
+  const manifest = deploymentIdentity(env, stage3);
+  assert.deepEqual(manifest.allowedRoutes, stage3.allowedRoutes);
+  assert.deepEqual(manifest.identityProvider, stage3.identityProvider);
+  assert.ok(!('sampleMarker' in manifest));
+});
