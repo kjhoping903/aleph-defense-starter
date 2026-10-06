@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
 const form = document.querySelector('#login-form');
 const login = document.querySelector('#login');
+const signup = document.querySelector('#signup');
 const logout = document.querySelector('#logout');
 const status = document.querySelector('#auth-status');
 const cards = document.querySelector('#cards');
@@ -50,20 +51,30 @@ try {
   if (error) throw new Error('로그인 세션을 확인할 수 없습니다.');
   await showSession(data.session);
   login.disabled = false;
+  signup.disabled = false;
 } catch { status.textContent = '로그인 설정을 불러오지 못했습니다. 관리자 설정을 확인하세요.'; }
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
   if (!client) return;
   login.disabled = true;
-  status.textContent = '로그인하는 중입니다.';
+  signup.disabled = true;
+  const registering = event.submitter === signup;
+  status.textContent = registering ? '회원가입하는 중입니다.' : '로그인하는 중입니다.';
   try {
-    const { data, error } = await client.auth.signInWithPassword({
+    const credentials = {
       email: document.querySelector('#email').value.trim(),
       password: document.querySelector('#password').value,
-    });
+    };
+    const { data, error } = registering
+      ? await client.auth.signUp(credentials)
+      : await client.auth.signInWithPassword(credentials);
     document.querySelector('#password').value = '';
     if (error) throw error;
+    if (registering && !data.session) {
+      status.textContent = '가입 요청을 접수했습니다. 인증 메일을 확인하고 인증 후 로그인하세요. 이미 가입했다면 로그인을 이용하세요.';
+      return;
+    }
     if (!data.session) throw new Error('로그인 세션을 받지 못했습니다.');
     await showSession(data.session);
   } catch (error) {
@@ -72,10 +83,13 @@ form.addEventListener('submit', async event => {
       email_not_confirmed: '이메일 인증을 먼저 완료하세요.',
       over_request_rate_limit: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.',
       user_banned: '사용이 제한된 계정입니다.',
+      signup_disabled: '현재 회원가입이 비활성화되어 있습니다. 관리자에게 문의하세요.',
+      weak_password: '비밀번호가 보안 조건을 충족하지 않습니다. 더 긴 비밀번호를 사용하세요.',
+      over_email_send_rate_limit: '인증 메일 요청이 너무 많습니다. 잠시 후 다시 시도하세요.',
     };
-    status.textContent = `로그인 실패: ${reasons[error.code] ?? error.message ?? '네트워크 연결을 확인하세요.'}`;
+    status.textContent = `${registering ? '회원가입' : '로그인'} 실패: ${reasons[error.code] ?? error.message ?? '네트워크 연결을 확인하세요.'}`;
   }
-  finally { document.querySelector('#password').value = ''; login.disabled = false; }
+  finally { document.querySelector('#password').value = ''; login.disabled = false; signup.disabled = false; }
 });
 
 logout.addEventListener('click', async () => {
