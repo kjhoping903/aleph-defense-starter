@@ -1,7 +1,7 @@
 // The student changes this check as each stage adds an attack to the same app.
 // Never return tokens, private keys, real names, or note bodies.
 export async function runAttackChecks(config) {
-  if (![1, 2].includes(config.step)) throw new Error('이 단계의 공격 점검을 src/attack-check.mjs에 구현해 주세요.');
+  if (![1, 2, 3].includes(config.step)) throw new Error('이 단계의 공격 점검을 src/attack-check.mjs에 구현해 주세요.');
   let app;
   try {
     app = new URL(config.publicAppUrl);
@@ -11,6 +11,21 @@ export async function runAttackChecks(config) {
   if (app.protocol !== 'https:' || app.username || app.password || app.search || app.hash
       || app.pathname !== '/' || app.hostname.endsWith('.example')) {
     throw new Error('aleph.config.json의 실제 배포 주소를 먼저 넣어 주세요.');
+  }
+  if (config.step === 3) {
+    const attempts = [];
+    for (const [method, path] of [['GET', '/api/materials'], ['POST', '/api/materials'],
+      ['GET', '/api/materials/00000000-0000-4000-8000-000000000000'],
+      ['PUT', '/api/materials/00000000-0000-4000-8000-000000000000'],
+      ['DELETE', '/api/materials/00000000-0000-4000-8000-000000000000']]) {
+      let observed;
+      try {
+        const response = await fetch(new URL(path, app), { method, redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(10000) });
+        observed = `실제 비로그인 요청 HTTP ${response.status}`;
+      } catch { observed = '요청 실패: 차단 성공으로 판단하지 않음'; }
+      attempts.push({ attackId: `anonymous_${method.toLowerCase()}_${path.includes('00000000') ? 'single' : 'list'}`, expected: 'HTTP 401, 자료 없음', observed });
+    }
+    return attempts;
   }
   if (config.step === 2) {
     const results = [];

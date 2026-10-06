@@ -1,5 +1,13 @@
 # BYTE BACK 방어전 시작 틀 R5 — 2단계 저장점
 
+## 3단계 메모 편집 추가
+
+로그인 후 메모 추가·수정·삭제를 제공합니다. API의 `body`는 DB `content`에 매핑합니다. `POST /api/materials`는 `{id?,title,body}`를 받고 서버가 확인한 사용자 ID를 owner_id에 저장하며 `{id}`를 반환합니다. UUID가 없으면 서버에서 생성합니다. 목록 `GET /api/materials`는 본인 메모 배열을 반환합니다. `/api/materials/:id`의 GET·PUT은 `{id,title,body}`, DELETE는 204, 없는 행 GET은 404입니다. 실제 경로는 allowedRoutes에 기록했습니다.
+
+기존 로그인 검증 도우미와 DB 행은 보존합니다. owner_id가 없는 기존 메모는 본인 목록에 나오지 않습니다. 이 단계의 단건 GET·PUT·DELETE에는 소유자 검사가 없어 B가 A의 ID를 알면 접근·변경할 수 있습니다. 이는 4단계에서 고칠 명시된 허점입니다. 실제 A/B 계정 CRUD는 아직 미검증입니다.
+
+실행: `npm run build -- --local`. 배포 후 로그인 → 메모 추가 → 수정 → 삭제를 확인하세요. 토큰 없는 요청은 401로 거부되어야 합니다. 서버 DB 역할에 쓰기 권한이 없으면 SQL Editor에서 `grant select, insert, update, delete on table public.learning_notes to service_role;`를 실행합니다. anon·authenticated에는 권한을 주지 않습니다. 이전 단계의 기록은 아래에 보존합니다.
+
 ## 현재 추가 구현: 로그인 후 DB 조회
 
 `/api/materials`는 기존 `src/verify-login.mjs` 검증을 통과한 요청에만 `learning_notes`의 제목·본문을 반환합니다. 브라우저 userId·role은 사용하지 않습니다. 서버는 `SUPABASE_URL`과 `SUPABASE_SECRET_KEY`를 환경변수에서 읽으며 비밀 키를 응답하지 않습니다. 현재 단계에서는 검증된 모든 로그인에 같은 학습용 메모를 반환하며 사용자별 소유권 제한은 아직 없습니다.

@@ -5,6 +5,7 @@ const signup = document.querySelector('#signup');
 const logout = document.querySelector('#logout');
 const status = document.querySelector('#auth-status');
 const cards = document.querySelector('#cards');
+const noteForm = document.querySelector('#note-form');
 let client;
 let generation = 0;
 
@@ -14,6 +15,7 @@ async function showSession(session) {
   cards.hidden = true;
   form.hidden = Boolean(session);
   logout.hidden = !session;
+  noteForm.hidden = !session;
   if (!session) { status.textContent = '이메일과 비밀번호로 로그인하세요.'; return; }
   status.textContent = '로그인되었습니다. 자료 접근 권한을 확인하는 중입니다.';
   try {
@@ -32,20 +34,61 @@ async function showSession(session) {
     }
     const data = await response.json();
     if (current !== generation) return;
-    if (!Array.isArray(data.cards)) throw new Error('자료 응답 형식이 맞지 않습니다.');
-    cards.replaceChildren(...data.cards.map(card => {
+    if (!Array.isArray(data)) throw new Error('자료 응답 형식이 맞지 않습니다.');
+    cards.replaceChildren(...data.map(card => {
       const item = document.createElement('li');
       const title = document.createElement('strong');
       const text = document.createElement('span');
       title.textContent = card.title;
-      text.textContent = card.content;
+      text.textContent = card.body;
       item.append(title, text);
+      const edit = document.createElement('button');
+      edit.textContent = '수정';
+      edit.onclick = async () => {
+        const title = prompt('메모 제목', card.title);
+        if (title === null) return;
+        const body = prompt('메모 내용', card.body);
+        if (body === null) return;
+        await mutate(`/api/materials/${card.id}`, 'PUT', { title, body });
+      };
+      const remove = document.createElement('button');
+      remove.textContent = '삭제';
+      remove.onclick = async () => {
+        if (confirm('이 메모를 삭제할까요?')) await mutate(`/api/materials/${card.id}`, 'DELETE');
+      };
+      item.append(edit, remove);
       return item;
     }));
     cards.hidden = false;
-    status.textContent = data.cards.length ? '로그인 완료. DB 자료를 불러왔습니다.' : '로그인 완료. DB에 저장된 메모가 없습니다.';
+    status.textContent = data.length ? '내 메모를 불러왔습니다.' : '내 메모가 없습니다. 새 메모를 추가하세요.';
   } catch (error) { if (current === generation) status.textContent = `로그인 상태입니다. ${error.message}`; }
 }
+
+async function mutate(path, method, body) {
+  try {
+    const { data, error } = await client.auth.getSession();
+    if (error || !data.session) throw new Error('다시 로그인하세요.');
+    const response = await fetch(path, { method, credentials: 'omit',
+      headers: { Authorization: `Bearer ${data.session.access_token}`, 'Content-Type': 'application/json' },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+    if (!response.ok) throw new Error(`메모 저장·삭제 실패 (HTTP ${response.status})`);
+    await showSession(data.session);
+    return true;
+  } catch (error) { status.textContent = error.message; return false; }
+}
+
+noteForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = noteForm.querySelector('button');
+  button.disabled = true;
+  try {
+    if (await mutate('/api/materials', 'POST', {
+      title: document.querySelector('#note-title').value,
+      body: document.querySelector('#note-body').value,
+    })) noteForm.reset();
+  } finally { button.disabled = false; }
+});
 
 try {
   client = createClient('https://ozapzbiuvusywjlstfrv.supabase.co',
@@ -104,6 +147,7 @@ logout.addEventListener('click', async () => {
   ++generation;
   cards.replaceChildren();
   cards.hidden = true;
+  noteForm.hidden = true;
   try {
     const { error } = await client.auth.signOut({ scope: 'local' });
     if (error) throw error;
