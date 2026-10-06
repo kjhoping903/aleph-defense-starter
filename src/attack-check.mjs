@@ -14,10 +14,11 @@ export async function runAttackChecks(config) {
   }
   if (config.step === 2) {
     const results = [];
-    for (const path of ['/', '/data.json', '/aleph.json', '/api/ai', '/api/threat-intel']) {
+    for (const path of ['/', '/data.json', '/aleph.json', '/api/materials', '/api/ai', '/api/threat-intel']) {
       const expected = path === '/' ? 'HTTP 200 및 자료 이전 안내 화면' : path === '/data.json'
         ? 'HTTP 200 JSON이며 notes가 빈 배열' : path === '/aleph.json'
-        ? '실제 저장소 및 현재 커밋과 일치하는 2단계 배포 정보' : '미구현 API는 HTTP 501로 자료를 반환하지 않음';
+        ? '현재 커밋과 일치하는2단계 배포 정보, 정적 확인 표시 없음' : path === '/api/materials'
+        ? 'HTTP 200, 서버 안내 카드이며 메모 본문 없음' : '미구현 API는 HTTP 501로 자료를 반환하지 않음';
       let observed;
       try {
         const response = await fetch(new URL(path, app), { redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(10000) });
@@ -25,10 +26,13 @@ export async function runAttackChecks(config) {
         if (path === '/') observed = `HTTP ${response.status}; 이전 안내 ${text.includes('Supabase SQL Editor') ? '있음' : '없음'}`;
         else if (path === '/data.json') {
           let data; try { data = JSON.parse(text); } catch {}
-          observed = `HTTP ${response.status}; 메모 건수 ${Array.isArray(data?.notes) ? data.notes.length : '형식 오류'}`;
+          observed = `HTTP ${response.status}; 메모 건수 ${Array.isArray(data?.notes) ? data.notes.length : '형식 오류'}; 확인 표시 ${text.includes(config.sampleMarker) ? '남음' : '없음'}`;
         } else if (path === '/aleph.json') {
           let data; try { data = JSON.parse(text); } catch {}
-          observed = `HTTP ${response.status}; 단계 ${data?.step ?? '없음'}; 저장소 ${data?.repoUrl === config.repoUrl ? '일치' : '불일치'}; 현재 커밋 ${data?.commit === config.expectedCommit ? '일치' : '불일치'}`;
+          observed = `HTTP ${response.status}; 단계 ${data?.step ?? '없음'}; 저장소 ${data?.repoUrl === config.repoUrl ? '일치' : '불일치'}; 현재 커밋 ${data?.commit === config.expectedCommit ? '일치' : '불일치'}; 확인 표시 ${text.includes(config.sampleMarker) ? '남음' : '없음'}`;
+        } else if (path === '/api/materials') {
+          let data; try { data = JSON.parse(text); } catch {}
+          observed = `HTTP ${response.status}; 안내 카드 ${Array.isArray(data?.cards) ? data.cards.length : '형식 오류'}`;
         } else observed = `HTTP ${response.status}; 미구현 응답 ${response.status === 501 ? '확인' : '미확인'}`;
       } catch { observed = '요청 실패: 접근 제어 성공으로 판단하지 않음'; }
       results.push({ attackId: path === '/' ? 'public_page' : path.slice(1).replaceAll('/', '_').replaceAll('.', '_'), expected, observed });

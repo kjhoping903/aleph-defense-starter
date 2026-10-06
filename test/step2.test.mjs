@@ -6,6 +6,7 @@ import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { deploymentIdentity } from '../scripts/deployment-identity.mjs';
 import { runAttackChecks } from '../src/attack-check.mjs';
+import materials from '../api/materials.js';
 
 test('step 2 clears stale output and rejects reintroduced source notes', async () => {
   const root = await mkdtemp(join(tmpdir(), 'step2-'));
@@ -16,7 +17,9 @@ test('step 2 clears stale output and rejects reintroduced source notes', async (
     await writeFile(join(root, 'data.json'), JSON.stringify({ notes: [] }));
     await writeFile(join(root, 'public/data.json'), JSON.stringify({ notes: [{ content: 'stale-test-value' }] }));
     execFileSync(process.execPath, [join(root, 'scripts/build-public.mjs'), '--local'], { windowsHide: true });
-    assert.deepEqual(JSON.parse(await readFile(join(root, 'public/data.json'), 'utf8')).notes, []);
+    const output = await readFile(join(root, 'public/data.json'), 'utf8');
+    assert.deepEqual(JSON.parse(output).notes, []);
+    assert.ok(!output.includes('SAMPLE_NOTE_1'));
     await writeFile(join(root, 'data.json'), JSON.stringify({ notes: [{ content: 'test-value' }] }));
     assert.throws(() => execFileSync(process.execPath, [join(root, 'scripts/build-public.mjs'), '--local'], { windowsHide: true, stdio: 'pipe' }));
   } finally { await rm(root, { recursive: true, force: true }); }
@@ -24,7 +27,19 @@ test('step 2 clears stale output and rejects reintroduced source notes', async (
 
 test('step 2 identity retains actual deployment metadata', () => {
   const config = { step: 2, judgeIssuer: 'https://aleph-judge-production.up.railway.app/defense/judge', sampleMarker: 'SAMPLE_NOTE_1' };
-  assert.equal(deploymentIdentity({ VERCEL_GIT_PROVIDER: 'github', VERCEL_GIT_REPO_OWNER: 'student', VERCEL_GIT_REPO_SLUG: 'vault', VERCEL_GIT_COMMIT_SHA: 'a'.repeat(40), VERCEL_URL: 'vault.vercel.app' }, config).step, 2);
+  const identity = deploymentIdentity({ VERCEL_GIT_PROVIDER: 'github', VERCEL_GIT_REPO_OWNER: 'student', VERCEL_GIT_REPO_SLUG: 'vault', VERCEL_GIT_COMMIT_SHA: 'a'.repeat(40), VERCEL_URL: 'vault.vercel.app' }, config);
+  assert.equal(identity.step, 2);
+  assert.ok(!JSON.stringify(identity).includes('SAMPLE_NOTE_1'));
+});
+
+test('server status card works without credentials and refuses writes', () => {
+  const response = { setHeader() {}, status(value) { this.code = value; return this; }, json(value) { this.body = value; return this; } };
+  materials({ method: 'GET' }, response);
+  assert.equal(response.code, 200);
+  assert.equal(response.body.cards.length, 1);
+  assert.ok(!('notes' in response.body));
+  materials({ method: 'POST' }, response);
+  assert.equal(response.code, 405);
 });
 
 test('self-check reports old deployment and request failures', async () => {

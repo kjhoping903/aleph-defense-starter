@@ -7,7 +7,7 @@ const data = JSON.parse(await readFile(resolve(root, 'data.json'), 'utf8'));
 if (![1, 2].includes(config.step) || !Array.isArray(data.notes)) throw new Error('지원 단계와 자료 형식을 확인하세요.');
 if (config.step === 2 && data.notes.length !== 0) throw new Error('2단계 원본 data.json에 메모를 남기지 마세요.');
 await mkdir(resolve(root, 'public'), { recursive: true });
-const publicData = config.step === 2 ? { sampleMarker: config.sampleMarker, notes: [] } : data;
+const publicData = config.step === 2 ? { notes: [] } : data;
 await writeFile(resolve(root, 'public/data.json'), `${JSON.stringify(publicData, null, 2)}\n`, 'utf8');
 if (process.argv.includes('--local')) {
   await rm(resolve(root, 'public/aleph.json'), { force: true });
