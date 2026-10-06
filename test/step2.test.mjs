@@ -38,6 +38,9 @@ test('materials API rejects anonymous identity claims and refuses writes', async
   assert.equal(response.code, 401);
   assert.ok(!('cards' in response.body));
   assert.ok(!('notes' in response.body));
+  await materials({ method: 'GET', headers: { authorization: 'Bearer invalid' }, query: { userId: 'A', role: 'admin' } }, response);
+  assert.equal(response.code, 401);
+  assert.ok(!('cards' in response.body));
   await materials({ method: 'POST' }, response);
   assert.equal(response.code, 405);
 });

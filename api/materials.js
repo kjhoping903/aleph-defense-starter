@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createClient } from '@supabase/supabase-js';
 import { createLoginVerifier } from '../src/verify-login.mjs';
 
 const config = JSON.parse(readFileSync(new URL('../aleph.config.json', import.meta.url), 'utf8'));
@@ -17,7 +18,13 @@ export default async function handler(request, response) {
   }
   let identity;
   try {
-    verifyLogin ??= createLoginVerifier({ config, supabaseSecretKey: process.env.SUPABASE_SECRET_KEY });
+    if (!verifyLogin) {
+      const supabaseClient = createClient(new URL(config.identityProvider.issuer).origin,
+        'sb_publishable_AHnLVsVSJoz3xIxl0OfTCA_tqEKaKIG', {
+          auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
+        });
+      verifyLogin = createLoginVerifier({ config, supabaseClient });
+    }
     identity = await verifyLogin(authorization);
   } catch {
     // Configuration failures must not expose cards or server secrets.
