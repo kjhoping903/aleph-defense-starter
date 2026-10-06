@@ -1,5 +1,11 @@
 # BYTE BACK 방어전 시작 틀 R5 — 2단계 저장점
 
+## 현재 추가 구현: 로그인 후 DB 조회
+
+`/api/materials`는 기존 `src/verify-login.mjs` 검증을 통과한 요청에만 `learning_notes`의 제목·본문을 반환합니다. 브라우저 userId·role은 사용하지 않습니다. 서버는 `SUPABASE_URL`과 `SUPABASE_SECRET_KEY`를 환경변수에서 읽으며 비밀 키를 응답하지 않습니다. 현재 단계에서는 검증된 모든 로그인에 같은 학습용 메모를 반환하며 사용자별 소유권 제한은 아직 없습니다.
+
+Vercel Production에 두 환경변수를 설정하고, Supabase SQL Editor에서 로컬 SQL을 실행해야 실제 조회가 가능합니다. 테이블이 이미 있으면 생성 SQL을 반복하지 말고 기존 자료를 보존하세요. 필요 시 `grant select on table public.learning_notes to service_role;`만 실행합니다. 정상: 로그인 후 DB 카드 표시. 거부: 토큰 없는 요청·잘못된 토큰은 401이며 자료 없음. DB 설정 누락·조회 실패는 503이며 자료 없음. 실제 A 계정·DB 조회는 미검증입니다. 아래 저장점 기록은 해당 커밋 시점의 과거 상태입니다.
+
 ## 현재 기능과 단계 상태
 공개 정적 파일에서 가상 메모를 제거하고 자료 이전 안내 화면을 제공합니다. 원본과 public/data.json의 notes는 빈 배열입니다. 2단계 빌드는 원본에 메모가 다시 들어오면 실패하며 메모를 복사하지 않습니다. Vercel에서는 실제 시스템 환경변수로 2단계 aleph.json을 생성합니다.
 

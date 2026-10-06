@@ -22,7 +22,14 @@ async function showSession(session) {
       headers: { Authorization: `Bearer ${session.access_token}` },
     });
     if (current !== generation) return;
-    if (!response.ok) throw new Error(response.status === 401 ? '로그인이 만료됐습니다. 다시 로그인하세요.' : '자료 서버를 사용할 수 없습니다.');
+    if (!response.ok) {
+      let errorBody; try { errorBody = await response.json(); } catch {}
+      const messages = {
+        DATABASE_CONFIG_UNAVAILABLE: '서버 DB 연결 설정이 필요합니다.',
+        MATERIALS_READ_FAILED: 'DB 자료를 읽지 못했습니다. 테이블 생성과 서버 읽기 권한을 확인하세요.',
+      };
+      throw new Error(response.status === 401 ? '로그인이 만료됐습니다. 다시 로그인하세요.' : messages[errorBody?.error] ?? '자료 서버를 사용할 수 없습니다.');
+    }
     const data = await response.json();
     if (current !== generation) return;
     if (!Array.isArray(data.cards)) throw new Error('자료 응답 형식이 맞지 않습니다.');
@@ -36,7 +43,7 @@ async function showSession(session) {
       return item;
     }));
     cards.hidden = false;
-    status.textContent = '로그인 및 서버 토큰 검증 완료.';
+    status.textContent = data.cards.length ? '로그인 완료. DB 자료를 불러왔습니다.' : '로그인 완료. DB에 저장된 메모가 없습니다.';
   } catch (error) { if (current === generation) status.textContent = `로그인 상태입니다. ${error.message}`; }
 }
 
