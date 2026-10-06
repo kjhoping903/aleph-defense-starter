@@ -32,13 +32,13 @@ test('step 2 identity retains actual deployment metadata', () => {
   assert.ok(!JSON.stringify(identity).includes('SAMPLE_NOTE_1'));
 });
 
-test('server status card works without credentials and refuses writes', () => {
+test('materials API rejects anonymous identity claims and refuses writes', async () => {
   const response = { setHeader() {}, status(value) { this.code = value; return this; }, json(value) { this.body = value; return this; } };
-  materials({ method: 'GET' }, response);
-  assert.equal(response.code, 200);
-  assert.equal(response.body.cards.length, 1);
+  await materials({ method: 'GET', query: { userId: 'A', role: 'authenticated' }, body: { userId: 'A', role: 'admin' } }, response);
+  assert.equal(response.code, 401);
+  assert.ok(!('cards' in response.body));
   assert.ok(!('notes' in response.body));
-  materials({ method: 'POST' }, response);
+  await materials({ method: 'POST' }, response);
   assert.equal(response.code, 405);
 });
 
