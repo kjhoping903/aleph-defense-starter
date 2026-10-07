@@ -21,9 +21,25 @@ export async function runAttackChecks(config) {
       let observed;
       try {
         const response = await fetch(new URL(path, app), { method, redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(10000) });
-        observed = `실제 비로그인 요청 HTTP ${response.status}`;
+        let data; try { data = await response.json(); } catch {}
+        const jsonError = data && !Array.isArray(data) && typeof data.error === 'string' && data.error.length > 0;
+        const noMaterials = jsonError && Object.keys(data).every(key => key === 'error');
+        observed = '실제 비로그인 요청 HTTP ' + response.status + '; JSON 오류 ' + (jsonError ? '있음' : '없음') + '; 오류만 반환 ' + (noMaterials ? '예' : '아니오');
       } catch { observed = '요청 실패: 차단 성공으로 판단하지 않음'; }
-      attempts.push({ attackId: `anonymous_${method.toLowerCase()}_${path.includes('00000000') ? 'single' : 'list'}`, expected: 'HTTP 401, 자료 없음', observed });
+      attempts.push({ attackId: `anonymous_${method.toLowerCase()}_${path.includes('00000000') ? 'single' : 'list'}`, expected: 'HTTP 401 또는 403, JSON 오류만 반환', observed });
+    }
+    for (const path of ['/', '/aleph.json']) {
+      let observed;
+      try {
+        const response = await fetch(new URL(path, app), { redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(10000) });
+        if (path === '/') {
+          observed = 'HTTP ' + response.status + '; nosniff ' + (response.headers.get('x-content-type-options') === 'nosniff' ? '있음' : '없음') + '; CSP ' + (response.headers.has('content-security-policy') ? '있음' : '없음');
+        } else {
+          let data; try { data = await response.json(); } catch {}
+          observed = 'HTTP ' + response.status + '; 단계 ' + (data?.step === config.step ? '일치' : '불일치') + '; 커밋 ' + (data?.commit === config.expectedCommit ? '일치' : '불일치') + '; 발급자 ' + (JSON.stringify(data?.identityProvider) === JSON.stringify(config.identityProvider) ? '일치' : '불일치') + '; 경로 ' + (JSON.stringify(data?.allowedRoutes) === JSON.stringify(config.allowedRoutes) ? '일치' : '불일치');
+        }
+      } catch { observed = '요청 실패: 성공으로 판단하지 않음'; }
+      attempts.push({ attackId: path === '/' ? 'public_security_headers' : 'deployment_manifest', expected: path === '/' ? 'HTTP 200, nosniff 또는 CSP 헤더' : 'HTTP 200 JSON, 현재 단계·커밋·발급자·경로 일치', observed });
     }
     return attempts;
   }

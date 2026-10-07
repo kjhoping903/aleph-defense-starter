@@ -4,6 +4,7 @@ const login = document.querySelector('#login');
 const signup = document.querySelector('#signup');
 const logout = document.querySelector('#logout');
 const status = document.querySelector('#auth-status');
+const sessionStatus = document.querySelector('#session-status');
 const cards = document.querySelector('#cards');
 const noteForm = document.querySelector('#note-form');
 let client;
@@ -11,6 +12,7 @@ let generation = 0;
 
 async function showSession(session) {
   const current = ++generation;
+  sessionStatus.textContent = session ? '로그인 상태입니다.' : '로그아웃 상태입니다.';
   cards.replaceChildren();
   cards.hidden = true;
   form.hidden = Boolean(session);
@@ -102,7 +104,10 @@ try {
   await showSession(data.session);
   login.disabled = false;
   signup.disabled = false;
-} catch { status.textContent = '로그인 설정을 불러오지 못했습니다. 관리자 설정을 확인하세요.'; }
+} catch {
+  sessionStatus.textContent = '로그인 상태를 확인하지 못했습니다.';
+  status.textContent = '로그인 설정을 불러오지 못했습니다. 관리자 설정을 확인하세요.';
+}
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
