@@ -14,10 +14,10 @@ export async function runAttackChecks(config) {
   }
   if (config.step === 3) {
     const attempts = [];
-    for (const [method, path] of [['GET', '/api/materials'], ['POST', '/api/materials'],
-      ['GET', '/api/materials/00000000-0000-4000-8000-000000000000'],
-      ['PUT', '/api/materials/00000000-0000-4000-8000-000000000000'],
-      ['DELETE', '/api/materials/00000000-0000-4000-8000-000000000000']]) {
+    for (const [method, path] of [['GET', '/api/notes'], ['POST', '/api/notes'],
+      ['GET', '/api/notes/00000000-0000-4000-8000-000000000000'],
+      ['PUT', '/api/notes/00000000-0000-4000-8000-000000000000'],
+      ['DELETE', '/api/notes/00000000-0000-4000-8000-000000000000']]) {
       let observed;
       try {
         const response = await fetch(new URL(path, app), { method, redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(10000) });

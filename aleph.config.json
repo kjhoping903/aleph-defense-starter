@@ -9,7 +9,7 @@
     "audience": "authenticated",
     "jwksUrl": "https://ozapzbiuvusywjlstfrv.supabase.co/auth/v1/.well-known/jwks.json"
   },
-  "allowedRoutes": ["GET /api/materials", "POST /api/materials", "GET /api/materials/:id", "PUT /api/materials/:id", "DELETE /api/materials/:id"],
+  "allowedRoutes": ["GET /api/notes", "POST /api/notes", "GET /api/notes/:id", "PUT /api/notes/:id", "DELETE /api/notes/:id"],
   "originalApiUrl": null,
   "restoreRoute": null
 }

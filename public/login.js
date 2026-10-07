@@ -21,7 +21,7 @@ async function showSession(session) {
   if (!session) { status.textContent = '이메일과 비밀번호로 로그인하세요.'; return; }
   status.textContent = '로그인되었습니다. 자료 접근 권한을 확인하는 중입니다.';
   try {
-    const response = await fetch('/api/materials', {
+    const response = await fetch('/api/notes', {
       cache: 'no-store', credentials: 'omit',
       headers: { Authorization: `Bearer ${session.access_token}` },
     });
@@ -51,12 +51,12 @@ async function showSession(session) {
         if (title === null) return;
         const body = prompt('메모 내용', card.body);
         if (body === null) return;
-        await mutate(`/api/materials/${card.id}`, 'PUT', { title, body });
+        await mutate(`/api/notes/${card.id}`, 'PUT', { title, body });
       };
       const remove = document.createElement('button');
       remove.textContent = '삭제';
       remove.onclick = async () => {
-        if (confirm('이 메모를 삭제할까요?')) await mutate(`/api/materials/${card.id}`, 'DELETE');
+        if (confirm('이 메모를 삭제할까요?')) await mutate(`/api/notes/${card.id}`, 'DELETE');
       };
       item.append(edit, remove);
       return item;
@@ -85,7 +85,7 @@ noteForm.addEventListener('submit', async event => {
   const button = noteForm.querySelector('button');
   button.disabled = true;
   try {
-    if (await mutate('/api/materials', 'POST', {
+    if (await mutate('/api/notes', 'POST', {
       title: document.querySelector('#note-title').value,
       body: document.querySelector('#note-body').value,
     })) noteForm.reset();
