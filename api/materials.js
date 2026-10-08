@@ -35,11 +35,13 @@ export default async function handler(request, response) {
     return response.status(503).json({ error: 'LOGIN_VERIFIER_UNAVAILABLE' });
   }
   if (!identity) return response.status(401).json({ error: 'UNAUTHORIZED' });
+  if (Object.hasOwn(request.query ?? {}, 'owner_id')) return response.status(400).json({ error: 'OWNER_NOT_ALLOWED' });
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (id !== undefined && (typeof id !== 'string' || !uuid.test(id))) return response.status(400).json({ error: 'INVALID_ID' });
   let input;
   if (['POST', 'PUT'].includes(request.method)) {
     try { input = typeof request.body === 'string' ? JSON.parse(request.body) : request.body; } catch {}
+    if (input && Object.hasOwn(input, 'owner_id')) return response.status(400).json({ error: 'OWNER_NOT_ALLOWED' });
     if (!input || typeof input.title !== 'string' || !input.title.trim() || input.title.length > 200
       || typeof input.body !== 'string' || !input.body.trim() || input.body.length > 10000
       || (request.method === 'POST' && input.id !== undefined && (typeof input.id !== 'string' || !uuid.test(input.id)))) {
@@ -65,12 +67,12 @@ export default async function handler(request, response) {
       if (error) return response.status(error.code === '23505' ? 409 : 503).json({ error: 'NOTE_CREATE_FAILED' });
       return response.status(201).json({ id: newId });
     }
-    // Stage 4 will add owner checks to single-note operations.
+    // Match the existing owner atomically; updates also retain the verified owner.
     if (id !== undefined) {
       let query = request.method === 'GET' ? table().select('id,title,content')
-        : request.method === 'PUT' ? table().update({ title: input.title, content: input.body }).select('id,title,content')
+        : request.method === 'PUT' ? table().update({ title: input.title, content: input.body, owner_id: identity.userId }).select('id,title,content')
         : table().delete().select('id');
-      const { data, error } = await query.eq('id', id).maybeSingle();
+      const { data, error } = await query.eq('id', id).eq('owner_id', identity.userId).maybeSingle();
       if (error) return response.status(503).json({ error: 'NOTE_OPERATION_FAILED' });
       if (!data) return response.status(404).json({ error: 'NOT_FOUND' });
       if (request.method === 'DELETE') return response.status(204).end();
