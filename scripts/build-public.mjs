@@ -4,7 +4,7 @@ import { deploymentIdentity } from './deployment-identity.mjs';
 const root = resolve(import.meta.dirname, '..');
 const config = JSON.parse(await readFile(resolve(root, 'aleph.config.json'), 'utf8'));
 const data = JSON.parse(await readFile(resolve(root, 'data.json'), 'utf8'));
-if (![1, 2, 3, 4].includes(config.step) || !Array.isArray(data.notes)) throw new Error('지원 단계와 자료 형식을 확인하세요.');
+if (![1, 2, 3, 4, 5].includes(config.step) || !Array.isArray(data.notes)) throw new Error('지원 단계와 자료 형식을 확인하세요.');
 if (config.step >= 2 && data.notes.length !== 0) throw new Error('원본 data.json에 메모를 남기지 마세요.');
 await mkdir(resolve(root, 'public'), { recursive: true });
 const publicData = config.step >= 2 ? { notes: [] } : data;

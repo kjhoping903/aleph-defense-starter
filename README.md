@@ -1,4 +1,15 @@
-# BYTE BACK 방어전 시작 틀 R5 — 4단계 저장점
+# BYTE BACK 방어전 시작 틀 R5 — 5단계 저장점
+
+## 5단계 저장점 — 2026-10-08
+
+브라우저 메모 CRUD는 /api/notes 서버 함수로만 요청하고 Supabase Auth 호출은 보존합니다. /api/materials 별칭과 서버 로그인·소유자 검사, SUPABASE_URL·SUPABASE_SECRET_KEY 설정도 유지합니다. 본인 메모 CRUD는 코드·모의 시험으로 확인했고 실제 A 계정 화면·DB CRUD는 미검증입니다. PUBLIC·anon·authenticated의 learning_notes 직접 권한 회수 SQL은 제안만 했으며 실제 적용·권한 전후 결과는 미확인입니다. service_role의 CRUD 권한이 유지돼야 서버 요청이 동작합니다.
+
+설정은 step 5이고 originalApiUrl은 쿼리 없는 https://ozapzbiuvusywjlstfrv.supabase.co/rest/v1/learning_notes 입니다. 발급자·audience·JWKS·배포 서비스 주소·두 API 경로의 메서드를 기존 구현과 대조했습니다. judgeIssuer는 변경하지 않았습니다. RULE_IDS는 실제 구현한 starter.deny만 유지하며 API 소유권 규칙이나 심판 판정으로 보고하지 않습니다. 빌드와 배포 식별 도우미는 5단계를 허용하고 aleph.json에 원본 API 주소를 기록합니다.
+
+다시 실행: `npm run build -- --local`. 커밋 후 `npm run bundle`은 실제 비로그인 자료 요청 10개, 첫 화면 헤더, 배포 manifest, 공개 notes 빈 배열, 키 없는 원본 GET을 자기 점검합니다. 키 없는 원본 거부는 anon 키 권한 회수 검증이 아닙니다. 실제 A/B 정상·타인 요청과 anon 키 원본 요청은 미실행입니다. 공개 정적 메모는 빈 배열을 유지하며 이전 단계의 공개 가상 메모 원문을 다시 넣지 않습니다.
+
+화면 확인: A 로그인 → 시험 메모 추가 → 수정 → 삭제. 정상은 본인 CRUD 유지, 거부는 비로그인 401·타인 단건 404·owner_id 입력 400입니다. 원본 anon 직접 요청은 별도 권한 거부 확인이 필요합니다. 푸시·재배포는 이번 저장점에서 미실행입니다. 아래 기록은 과거 단계 상태이며 login-visibility 시험은 이후 7f5f9d6에서 커밋됐습니다. 해당 시험의 기존 실패는 이번 범위 밖으로 보존합니다.
+
 
 ## 4단계 저장점 — 2026-10-08
 
