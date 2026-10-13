@@ -1,0 +1,13 @@
+✔ button shows pending, prevents duplicate requests, then reports success (1.4901ms)
+✔ HTTP error allows retry and successful retry updates status (0.2119ms)
+✔ invalid JSON and unexpected bodies are never displayed as healthy (1.4436ms)
+✔ network error is recoverable and does not display internal error text (0.491ms)
+✔ timeout aborts request and restores button for retry (9.3542ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91.7242

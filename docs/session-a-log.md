@@ -45,3 +45,26 @@ F01~F06/F08 실제 계정·DB 검사는 미실행. 커밋·푸시·배포·브�
 | 2026-10-13 14:55:12 KST | node scripts/check-t05-encoding.mjs | 통과 | evidence/utf8-check.log |
 
 F01~F10 자동 통과 3개, 실제 계정·DB 수동 7개 미실행. B는 모두 미실행.
+
+## 승인된 복사본 재검증 기록 — 2026-10-13
+과거 기록은 보존한다. 아래 검사는 이번 실행에서 직접 수행했다. 시각 미기록 항목은 정확한 실행 시각을 확보하지 못했다.
+
+| 시각(KST) | 작업 | 결과 | 근거 |
+|---|---|---|---|
+| 미기록 | 작업 폴더 및 인접 저장소 조사 | 과제5가 비어 있음, 기존 기능 2와 서로 다른 검사 목록 발견 | Get-ChildItem, rg --files, package.json, handover.md |
+| 미기록 | 작업 위치·F 기준 확인 | 사용자가 복사 및 기존 F01~F10 기준 승인 | 현재 대화 응답 |
+| 미기록 | 최초 복사 시도 | 기존 경로가 없어 실패, 재조사 후 choi-bujang 경로 확인 | Copy-Item 오류, Get-ChildItem |
+| 미기록 | 저장소 복사와 코드 조사 | 복사 성공, main HEAD 73a4747, 작업 트리 깨끗함, 기능 2 기존 구현 확인 | git status, git diff --stat, git log, API·순수 함수·배지·검사 파일 |
+| 미기록 | Node 인라인 검증 도우미 실행 시도 | PowerShell 인자 전달로 SyntaxError, 검사 미실행; 파일 도우미로 수정 | 도구 실행 출력, .local/recheck.mjs |
+| 15:05:22 | 버튼 검사 | 5 통과 / 0 실패 | evidence/recheck-health.log |
+| 15:05:22 | 버전 API 검사 | 5 통과 / 0 실패 | evidence/recheck-version.log |
+| 15:05:22~23 | 전체 검사 | 37 통과 / 5 실패 | evidence/recheck-all.log |
+| 15:05:23 | 배지 검사 | 3 통과 / 0 실패 | evidence/recheck-badge.log |
+| 15:05:23 | 기존 health 검사 | 10 통과 / 0 실패 | evidence/recheck-legacy-health.log |
+| 15:05:23 | 기기 가상 판정 검사 | 2건 통과, 실제 기기 검증 아님 | evidence/recheck-device.log |
+| 15:05:23 | JSON·UTF-8 확인 | JSON OK, 9개 파일 BOM·손상 없음 | evidence/recheck-json.log, evidence/recheck-encoding.log |
+| 미기록 | 제출 문서 병합 | 실제 HEAD·재검사 결과·미실행 사유 추가, 과거 기록 보존 | handover.md, docs/report.md, evidence/comparison.json |
+
+이번 실행에서 기능 코드·기존 테스트·로그인·메모·DB는 수정하지 않았다. 커밋·푸시·배포·브라우저 확인은 수행하지 않았다. 독립 Session B는 미실행이다.
+
+문서 병합 후 JSON 파싱·F/V ID 개수 확인·UTF-8 검사 재실행: 통과. 대상 10개 파일, BOM·손상 없음. git diff --check 오류 없음(줄바꿈 정책 경고만 출력).

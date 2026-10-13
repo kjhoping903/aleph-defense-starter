@@ -82,7 +82,7 @@
       "sessionA": "통과",
       "sessionB": "미실행",
       "note": "실제 기기 접속·심판 판정 아님",
-      "evidence": "evidence/device-decider.log"
+      "evidence": "evidence/recheck-device.log"
     },
     {
       "id": "F08",
@@ -103,7 +103,7 @@
       "sessionA": "통과",
       "sessionB": "미실행",
       "note": "버튼 로직의 자동 검사; 실제 브라우저는 미실행",
-      "evidence": "evidence/health-button.log"
+      "evidence": "evidence/recheck-health.log"
     },
     {
       "id": "F10",
@@ -113,7 +113,7 @@
       "execution": "node scripts/check-t05-encoding.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/utf8-check.log"
+      "evidence": "evidence/recheck-encoding.log"
     }
   ],
   "additionalChecks": [
@@ -124,7 +124,7 @@
       "execution": "node --test test/version-info.test.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/version-info.log"
+      "evidence": "evidence/recheck-version.log"
     },
     {
       "id": "V2",
@@ -133,7 +133,7 @@
       "execution": "node --test test/version-info.test.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/version-info.log"
+      "evidence": "evidence/recheck-version.log"
     },
     {
       "id": "V3",
@@ -142,7 +142,7 @@
       "execution": "node --test test/version-info.test.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/version-info.log"
+      "evidence": "evidence/recheck-version.log"
     },
     {
       "id": "V4",
@@ -151,7 +151,7 @@
       "execution": "node --test test/version-info.test.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/version-info.log"
+      "evidence": "evidence/recheck-version.log"
     },
     {
       "id": "V5",
@@ -160,7 +160,7 @@
       "execution": "node --test test/version-info.test.mjs",
       "sessionA": "통과",
       "sessionB": "미실행",
-      "evidence": "evidence/version-info.log"
+      "evidence": "evidence/recheck-version.log"
     }
   ],
   "metrics": {
@@ -170,7 +170,7 @@
     "questionsAskedByB": null,
     "minutesToResume": null
   },
-  "notes": "사용자가 기존 health 검사 10개 보존 + 전체 범위 F01~F10 별도 정의를 승인함. 이번 작업도 같은 대화에서 진행되어 독립 Session B 증거가 아님. 고정 검사 통과 수는 F01~F10만 집계하며 추가 V 검사를 합산하지 않음. 실제 계정·DB·브라우저·배포는 미실행. 전체 검사 37 통과/5 실패.",
+  "notes": "사용자가 기존 health 검사 10개 보존 + 전체 범위 F01~F10 별도 정의를 승인함. 이번 작업도 같은 대화에서 진행되어 독립 Session B 증거가 아님. 고정 검사 통과 수는 F01~F10만 집계하며 추가 V 검사를 합산하지 않음. 실제 계정·DB·브라우저·배포는 미실행. 전체 검사 37 통과/5 실패. 이번 대화에서 사용자가 문서의 F01~F10 기준 및 저장소 복사를 명시적으로 승인했다. 복사본 HEAD는 73a47475760fe29371cc5186d73634e8a542c3d8이며 기능 2가 이미 커밋되어 있었다. 이번 에이전트는 커밋·푸시·배포를 실행하지 않았다. 과거 미커밋 기록은 현재 상태와 구분한다.",
   "legacyEvidence": {
     "schema": "t05.comparison.v1",
     "status": "draft",
@@ -224,7 +224,7 @@
     "unauthenticatedAccessVerified": false,
     "fixedChecksHashNormalization": "UTF-8 text; CRLF normalized to LF before SHA-256"
   },
-  "currentVerification": "evidence/t05-verification.json",
+  "currentVerification": "evidence/recheck-verification.json",
   "comparisonConditions": {
     "sameCommitVerified": false,
     "sameNodeVersionVerified": false,
@@ -236,6 +236,16 @@
   "encodingCheck": {
     "status": "통과",
     "scope": "handover.md, package.json, package-lock.json, docs md/json, evidence md/json",
-    "log": "evidence/utf8-check.log"
+    "log": "evidence/recheck-encoding.log"
+  },
+  "latestRepository": {
+    "head": "73a47475760fe29371cc5186d73634e8a542c3d8",
+    "branch": "main",
+    "initialWorkingTree": "clean",
+    "copiedFrom": "C:/work/sep12/choi-bujang",
+    "copiedTo": "C:/work/sep12/과제5/choi-bujang",
+    "commitPerformedThisRun": false,
+    "pushPerformedThisRun": false,
+    "deploymentPerformedThisRun": false
   }
 }

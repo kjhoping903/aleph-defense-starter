@@ -1,0 +1,93 @@
+{
+  "node": "v24.21.0",
+  "results": [
+    {
+      "name": "health",
+      "command": "node --test test/health-status.test.mjs",
+      "startedAt": "2026-10-13T06:05:22.128Z",
+      "endedAt": "2026-10-13T06:05:22.289Z",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 5",
+        "ℹ pass 5",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "name": "version",
+      "command": "node --test test/version-info.test.mjs",
+      "startedAt": "2026-10-13T06:05:22.291Z",
+      "endedAt": "2026-10-13T06:05:22.400Z",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 5",
+        "ℹ pass 5",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "name": "all",
+      "command": "node --test",
+      "startedAt": "2026-10-13T06:05:22.400Z",
+      "endedAt": "2026-10-13T06:05:23.210Z",
+      "exitCode": 1,
+      "summary": [
+        "ℹ tests 42",
+        "ℹ pass 37",
+        "ℹ fail 5"
+      ]
+    },
+    {
+      "name": "badge",
+      "command": "node --test test/version-badge.test.mjs",
+      "startedAt": "2026-10-13T06:05:23.210Z",
+      "endedAt": "2026-10-13T06:05:23.322Z",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 3",
+        "ℹ pass 3",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "name": "legacy-health",
+      "command": "node --test test/t05-health.test.mjs",
+      "startedAt": "2026-10-13T06:05:23.322Z",
+      "endedAt": "2026-10-13T06:05:23.430Z",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 10",
+        "ℹ pass 10",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "name": "device",
+      "command": "node scripts/decider-test.mjs",
+      "startedAt": "2026-10-13T06:05:23.430Z",
+      "endedAt": "2026-10-13T06:05:23.476Z",
+      "exitCode": 0,
+      "summary": []
+    },
+    {
+      "name": "json",
+      "command": "node -e JSON.parse(require('fs').readFileSync('evidence/comparison.json','utf8')); console.log('JSON OK')",
+      "startedAt": "2026-10-13T06:05:23.476Z",
+      "endedAt": "2026-10-13T06:05:23.515Z",
+      "exitCode": 0,
+      "summary": [
+        "JSON OK"
+      ]
+    },
+    {
+      "name": "encoding",
+      "command": "node scripts/check-t05-encoding.mjs",
+      "startedAt": "2026-10-13T06:05:23.516Z",
+      "endedAt": "2026-10-13T06:05:23.565Z",
+      "exitCode": 0,
+      "summary": [
+        "UTF-8 without BOM, no damaged text, JSON parsed: 9 files"
+      ]
+    }
+  ]
+}

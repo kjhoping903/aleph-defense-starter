@@ -1,0 +1,11 @@
+✔ badge loads without authentication and shows only validated public fields (1.0031ms)
+✔ badge rejects HTTP failure, malformed JSON and unexpected response shape (0.9101ms)
+✔ version timeout does not affect the existing health button (6.7157ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.0812

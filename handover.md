@@ -119,3 +119,39 @@ DB 재시작 검사는 별도 승인 후 수행하며 기존 DB 자료를 삭제
 전체 실패 로그를 먼저 읽고 범위 밖 실패 해결 여부를 사용자와 정한다. 승인 전 커밋·푸시·배포하지 않는다.
 승인 후 이 기능 변경만 커밋하고 main에 푸시한다. Vercel Ready와 /api/version.commit의 앞 7자 일치를 대조한다. 자료실에서 서버 상태 확인을 눌러 서버 응답 정상과 하단 버전을 확인한다.
 실제 결과를 A 로그·측정표에 반영하고 별도 커밋한다. 독립 B는 인수인계서와 확정 커밋만 받고 동일 F01~F10을 실행한다.
+
+## 복사본 재검증 인수인계 — 2026-10-13 최신 상태
+앞선 기록은 과거 이력이다. 현재 상태와 충돌할 때 이 절과 evidence/recheck-verification.json을 기준으로 한다.
+
+### 1. 프로젝트 목표와 현재 상태
+기존 자료실을 보존하고 서버 상태 확인과 배포 버전 확인을 제공한다. 사용자의 승인으로 원본 저장소를 C:/work/sep12/과제5/choi-bujang에 복사했다. 원본 이름은 조사 후 choi-bujang으로 확인됐다. 현재 main, HEAD 73a47475760fe29371cc5186d73634e8a542c3d8이며 조사 시 작업 트리와 diff --stat은 비어 있었다. 기능 2가 이미 이 커밋에 포함되어 있어 과거의 '아직 커밋하지 않았다'는 기록은 현재 상태에 해당하지 않는다. 이번 실행에서는 커밋·푸시·배포하지 않았다.
+
+### 2. 완료한 작업
+기능 1 API·버튼과 기능 2 API·순수 함수·배지는 기존 구현을 확인하고 재검증했다. GET /api/version은 로그인·DB 접근 없이 허용된 두 Vercel 환경변수만 읽는다. 응답은 ok/app/version/commit/env/checkedAt 6개 키다. SHA 앞 7자리, 허용 환경 또는 local, 주입 시각의 ISO 문자열을 사용한다. 비GET은 405다. 배지는 독립 모듈이며 AbortController로 5초 후 취소하고 실패 문구를 표시한다. 서버 응답 정상은 DB·인증 성공을 보증하지 않는다.
+
+### 3. 변경 파일 목록과 이유
+이번 수정: handover.md, docs/report.md, docs/session-a-log.md, evidence/comparison.json — 복사·현재 Git 상태·재검사 근거 병합.
+이번 신규: evidence/recheck-verification.json, evidence/recheck-*.log — 실제 실행 결과 보존.
+기능 2 파일 api/version.js, src/version-info.mjs, public/version-badge.js, test/version-info.test.mjs와 HTML·package 버전은 복사 시 이미 존재하고 추적 중이었다. 이번에 코드나 기존 검사 파일을 수정하지 않았다. 로그인·메모·DB·기기 판정 코드도 수정하지 않았다. .local의 실행 보조 스크립트는 Git에서 제외된다.
+
+### 4. 실행·검증 방법
+작업 디렉터리 C:/work/sep12/과제5/choi-bujang, Node v24.21.0.
+node --test test/health-status.test.mjs: 5 통과 / 0 실패.
+node --test test/version-info.test.mjs: 5 통과 / 0 실패.
+node --test: 37 통과 / 5 실패, 종료 코드 1.
+node --test test/version-badge.test.mjs: 3 통과 / 0 실패.
+node --test test/t05-health.test.mjs: 10 통과 / 0 실패.
+npm.cmd run decider:test: 가상 요청 2건 통과.
+node -e "JSON.parse(require('fs').readFileSync('evidence/comparison.json','utf8')); console.log('JSON OK')"
+node scripts/check-t05-encoding.mjs
+화면에서는 자료실 하단 버전 배지와 서버 상태 확인 버튼을 확인한다. 정상은 서버 응답 정상과 버전·커밋·환경 표시, 오류는 각 기능의 실패 안내다. POST /api/version은 405로 거부되어야 한다. 실제 브라우저 검사는 미실행이다.
+
+### 5. 고정 검사 10개 결과
+사용자가 기존 문서의 F01~F10을 기준으로 승인했다. 위 F 표의 실행 절차와 조건을 유지한다. F07/F09/F10은 재실행 통과, F01~F06/F08은 실제 계정·DB·브라우저가 필요하여 미실행이다. F 통과 합계 3/10, 미실행 7/10이며 미실행은 실패와 구분한다. 기존 T05 health 10개는 별도 보존, V1~V5는 추가 검사로 모두 통과다. 독립 B는 모두 미실행이다.
+
+### 6. 미완료 사항과 위험 요소
+전체 검사의 첫 실패는 scripts/detect-test.mjs의 폭주 사건 판정이다. 나머지는 login-visibility의 VM import 오류 2건, materials-crud의 mock.module 오류, package-starter의 실제 API 목록 불일치다. evidence/recheck-all.log에 원본 출력을 남겼다. 다음 수정 후보 한 가지는 첫 실패의 탐지 조건 확인이며 이번 범위에서 수정하지 않았다.
+이번 문서 변경 커밋·푸시·Vercel 배포·실제 브라우저 확인은 미실시다. 원본의 푸시·배포 여부는 확인하지 않았다. 독립 Session B와 재개 시간·질문 수는 미측정이다. 실제 DB 보존을 자동 단위 검사 결과로 대체하지 않는다.
+
+### 7. 다음 세션이 가장 먼저 할 일
+현재 HEAD와 재검사 로그를 읽고 전체 실패의 별도 해결 범위를 정한다. 승인 후 이번 문서·증빙 변경만 커밋·푸시하고 Vercel 배포 상태를 확인한다. 배포의 /api/version.commit을 실제 커밋 앞 7자리와 대조하고, 자료실의 서버 상태 버튼과 버전 배지를 실제 브라우저에서 확인한다. 결과를 A 로그·측정표에 반영하여 별도 커밋한다. 독립 B는 문서와 확정 기능 커밋을 기준으로 비교한다.
