@@ -1,7 +1,7 @@
 // The student changes this check as each stage adds an attack to the same app.
 // Never return tokens, private keys, real names, or note bodies.
 export async function runAttackChecks(config) {
-  if (![1, 2, 3, 4, 5].includes(config.step)) throw new Error('이 단계의 공격 점검을 src/attack-check.mjs에 구현해 주세요.');
+  if (![1, 2, 3, 4, 5, 6].includes(config.step)) throw new Error('이 단계의 공격 점검을 src/attack-check.mjs에 구현해 주세요.');
   let app;
   try {
     app = new URL(config.publicAppUrl);
@@ -12,7 +12,7 @@ export async function runAttackChecks(config) {
       || app.pathname !== '/' || app.hostname.endsWith('.example')) {
     throw new Error('aleph.config.json의 실제 배포 주소를 먼저 넣어 주세요.');
   }
-  if (config.step >= 3 && config.step <= 5) {
+  if (config.step >= 3 && config.step <= 6) {
     const attempts = [];
     for (const [method, path] of [['GET', '/api/notes'], ['POST', '/api/notes'],
       ['GET', '/api/notes/00000000-0000-4000-8000-000000000000'],
@@ -48,7 +48,7 @@ export async function runAttackChecks(config) {
       } catch { observed = '요청 실패: 성공으로 판단하지 않음'; }
       attempts.push({ attackId: path === '/' ? 'public_security_headers' : path === '/data.json' ? 'public_notes_empty' : 'deployment_manifest', expected: path === '/' ? 'HTTP 200, nosniff 또는 CSP 헤더' : path === '/data.json' ? 'HTTP 200 JSON, notes 빈 배열' : 'HTTP 200 JSON, 현재 단계·커밋·발급자·경로 일치', observed });
     }
-    if (config.step === 5) {
+    if (config.step >= 5) {
       const source = new URL(config.originalApiUrl);
       const issuer = new URL(config.identityProvider.issuer);
       if (source.protocol !== 'https:' || source.origin !== issuer.origin

@@ -1,4 +1,16 @@
-# BYTE BACK 방어전 시작 틀 R5 — 5단계 저장점
+# BYTE BACK 방어전 시작 틀 R5 — 6단계 저장점
+
+## 6단계 저장점 — 2026-10-13
+
+`src/decider.mjs`의 `device_registered` 규칙은 `deviceRegistered === true`이면 `allow`·`approved`, 미등록이거나 값이 없으면 `deny`·`device_not_registered`를 반환합니다. 설정은 step 6이며 RULE_IDS에는 현재 구현한 `device_registered`만 기록합니다. 로그인·본인 메모 CRUD·두 API 경로·공개 notes 빈 배열을 보존합니다. 배포 주소·로그인 발급자·audience·JWKS·허용 경로·원본 API 주소를 기존 구현과 대조했고 judgeIssuer는 변경하지 않았습니다. 빌드·배포 식별·자기 점검 스크립트는 6단계를 지원합니다. 아래 저장점 기록은 과거 단계 상태입니다.
+
+1. 프로젝트 폴더의 터미널에서 `npm run decider:test`를 실행합니다. PowerShell에서 npm 스크립트 실행이 제한되면 같은 시험을 `npm.cmd run decider:test`로 실행합니다.
+2. `통과 · 등록 기기의 정상 요청`을 확인합니다. 시험은 등록 기기의 응답이 `allow`인지 검사합니다.
+3. `통과 · 미등록 기기의 가상 요청`을 확인합니다. 시험은 미등록 기기의 응답이 `deny`이고 이유 코드가 `device_not_registered`인지 검사합니다.
+
+2026-10-13에 위 시험을 실행해 두 항목 모두 통과했습니다. 같은 가상 요청의 반환값도 직접 확인해 등록은 `allow`·`approved`, 미등록은 `deny`·`device_not_registered`였습니다. 이 결과는 로컬 가상 요청 연습이며 실제 접속이나 심판 통과 증거가 아닙니다. 미등록 기기 공격은 심판이 맡습니다. 별도로 설치할 접속 프로그램이나 화면에서 누를 버튼은 없습니다. 키 생성·푸시·재배포·실제 등록 기기 접속은 미실행입니다.
+
+다시 빌드: `npm run build -- --local`(로컬 빌드 통과). 커밋 후 `npm run bundle`은 기존 비로그인 자료 요청 10개·보안 헤더·배포 manifest·공개 notes 빈 배열·키 없는 원본 GET을 자기 점검하며 실제 응답만 기록합니다. 배포 단계·커밋 불일치나 요청 실패는 그대로 기록합니다. 실제 등록 기기 정상 접속과 미등록 기기 공격은 이 자기 점검에 포함되지 않습니다. 실제 A/B 정상·타인 요청 및 anon 키 원본 요청도 미실행입니다.
 
 ## 5단계 저장점 — 2026-10-08
 
