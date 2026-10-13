@@ -1,0 +1,142 @@
+통과 · 등록 기기의 정상 요청
+통과 · 미등록 기기의 가상 요청
+이 명령은 가상 요청으로 연습하며 심판 통과 증거가 아닙니다.
+✔ scripts\decider-test.mjs (103.6132ms)
+통과 · 정상 조회 30건
+통과 · 10분 안에 120건
+확인 필요 · 10분 안에 121건
+확인 필요 · 폭주 조회 200건
+통과 · 서로 다른 사용자 각 100건
+통과 · 10분 밖으로 흩어진 조회 200건
+가상 사건 연습이며 실제 접속 회수나 심판 통과 증거가 아닙니다.
+✖ scripts\detect-test.mjs (97.5007ms)
+✔ button shows pending, prevents duplicate requests, then reports success (1.6078ms)
+✔ HTTP error allows retry and successful retry updates status (0.6042ms)
+✔ invalid JSON and unexpected bodies are never displayed as healthy (1.8564ms)
+✔ network error is recoverable and does not display internal error text (0.4399ms)
+✔ timeout aborts request and restores button for retry (5.8792ms)
+✔ browser configuration excludes secret key and refuses secret-shaped publishable key (1.794ms)
+✖ signed-out screen hides notes and never requests the DB (3.3404ms)
+✖ DB configuration failure hides editor; successful list enables CRUD controls (1.5099ms)
+file:///C:/work/choi-bujang-secret-vault-5/test/materials-crud.test.mjs:6
+mock.module('../src/verify-login.mjs', { namedExports: {
+     ^
+
+TypeError: mock.module is not a function
+    at file:///C:/work/choi-bujang-secret-vault-5/test/materials-crud.test.mjs:6:6
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+✖ test\materials-crud.test.mjs (79.6962ms)
+✖ 패키징 함수 기준표는 시작 틀의 실제 API와 일치한다 (7.0323ms)
+✔ 미구현 서버 뼈대는 성공이나 로그인 통과로 가장하지 않는다 (29.0265ms)
+✔ P7 시작 틀 안내는 실제 빌드 조건과 새 배포 시험에 맞는다 (3.2979ms)
+✔ build identity uses Vercel Git and deployment metadata (2.6618ms)
+✔ first attack check reads public data.json without credentials (56.9029ms)
+✔ stage 3 deployment manifest publishes actual routes and public issuer (0.2668ms)
+✔ step 2 clears stale output and rejects reintroduced source notes (131.4732ms)
+✔ step 2 identity retains actual deployment metadata (0.5454ms)
+✔ materials API rejects anonymous identity claims and refuses writes (22.637ms)
+✔ self-check reports old deployment and request failures (3.5139ms)
+✔ T05-01 GET returns 200 and exact public liveness body (1.577ms)
+✔ T05-02 GET is not cached (1.1544ms)
+✔ T05-03 GET prevents content sniffing (0.1755ms)
+✔ T05-04 POST is rejected with 405 and only an error (0.1523ms)
+✔ T05-05 PUT is rejected with 405 and only an error (0.1758ms)
+✔ T05-06 DELETE is rejected with 405 and only an error (0.0892ms)
+✔ T05-07 PATCH is rejected with 405 and only an error (0.1136ms)
+✔ T05-08 unsupported methods advertise GET and retain protective headers (0.2001ms)
+✔ T05-09 untrusted query body and authorization do not change or enter response (0.1865ms)
+✔ T05-10 server environment value is never returned (0.2801ms)
+✔ badge loads without authentication and shows only validated public fields (1.2772ms)
+✔ badge rejects HTTP failure, malformed JSON and unexpected response shape (0.5516ms)
+✔ version timeout does not affect the existing health button (10.3571ms)
+✔ V1 Vercel public fields shorten commit and select environment (1.6855ms)
+✔ V2 absent or invalid public fields fall back to local (0.1962ms)
+✔ V3 exact allowlist excludes injected sensitive fields and values (0.7674ms)
+✔ V4 payload identifies package and uses a deterministic valid ISO timestamp (0.4557ms)
+✔ V5 non-GET requests return 405 without version payload (0.2402ms)
+✔ 경보 묶음은 정답 없이 20건에서 40건입니다 (14.3586ms)
+✔ 가짜 decide 가 result.json 형식과 건수를 만듭니다 (71.0929ms)
+✔ 실행기는 네트워크 모듈을 부르지 않습니다 (1.2434ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 37
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1445.7796
+
+✖ failing tests:
+
+test at scripts\detect-test.mjs:1:1
+✖ scripts\detect-test.mjs (97.5007ms)
+  'test failed'
+
+test at test\login-visibility.test.mjs:27:1
+✖ signed-out screen hides notes and never requests the DB (3.3404ms)
+  evalmachine.<anonymous>:1
+  (async () => {import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
+                ^^^^^^
+  
+  SyntaxError: Cannot use import statement outside a module
+      at new Script (node:vm:117:7)
+      at createScript (node:vm:269:10)
+      at Object.runInContext (node:vm:300:10)
+      at screen (file:///C:/work/choi-bujang-secret-vault-5/test/login-visibility.test.mjs:23:12)
+      at TestContext.<anonymous> (file:///C:/work/choi-bujang-secret-vault-5/test/login-visibility.test.mjs:28:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at test\login-visibility.test.mjs:34:1
+✖ DB configuration failure hides editor; successful list enables CRUD controls (1.5099ms)
+  evalmachine.<anonymous>:1
+  (async () => {import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
+                ^^^^^^
+  
+  SyntaxError: Cannot use import statement outside a module
+      at new Script (node:vm:117:7)
+      at createScript (node:vm:269:10)
+      at Object.runInContext (node:vm:300:10)
+      at screen (file:///C:/work/choi-bujang-secret-vault-5/test/login-visibility.test.mjs:23:12)
+      at TestContext.<anonymous> (file:///C:/work/choi-bujang-secret-vault-5/test/login-visibility.test.mjs:36:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+
+test at test\materials-crud.test.mjs:1:1
+✖ test\materials-crud.test.mjs (79.6962ms)
+  'test failed'
+
+test at test\package-starter.test.mjs:8:1
+✖ 패키징 함수 기준표는 시작 틀의 실제 API와 일치한다 (7.0323ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'api/ai.js',
+  +   'api/auth-config.js',
+  +   'api/health.js',
+  +   'api/materials.js',
+  +   'api/notes.js',
+      'api/threat-intel.js',
+  +   'api/version.js'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/work/choi-bujang-secret-vault-5/test/package-starter.test.mjs:16:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'api/ai.js', 'api/auth-config.js', 'api/health.js', 'api/materials.js', 'api/notes.js', 'api/threat-intel.js', 'api/version.js' ],
+    expected: [ 'api/ai.js', 'api/threat-intel.js' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

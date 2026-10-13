@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: T05-01 GET returns 200 and exact public liveness body
+ok 1 - T05-01 GET returns 200 and exact public liveness body
+  ---
+  duration_ms: 1.2023
+  type: 'test'
+  ...
+# Subtest: T05-02 GET is not cached
+ok 2 - T05-02 GET is not cached
+  ---
+  duration_ms: 0.5924
+  type: 'test'
+  ...
+# Subtest: T05-03 GET prevents content sniffing
+ok 3 - T05-03 GET prevents content sniffing
+  ---
+  duration_ms: 0.0972
+  type: 'test'
+  ...
+# Subtest: T05-04 POST is rejected with 405 and only an error
+ok 4 - T05-04 POST is rejected with 405 and only an error
+  ---
+  duration_ms: 0.1061
+  type: 'test'
+  ...
+# Subtest: T05-05 PUT is rejected with 405 and only an error
+ok 5 - T05-05 PUT is rejected with 405 and only an error
+  ---
+  duration_ms: 0.0953
+  type: 'test'
+  ...
+# Subtest: T05-06 DELETE is rejected with 405 and only an error
+ok 6 - T05-06 DELETE is rejected with 405 and only an error
+  ---
+  duration_ms: 0.0787
+  type: 'test'
+  ...
+# Subtest: T05-07 PATCH is rejected with 405 and only an error
+ok 7 - T05-07 PATCH is rejected with 405 and only an error
+  ---
+  duration_ms: 0.0714
+  type: 'test'
+  ...
+# Subtest: T05-08 unsupported methods advertise GET and retain protective headers
+ok 8 - T05-08 unsupported methods advertise GET and retain protective headers
+  ---
+  duration_ms: 0.1161
+  type: 'test'
+  ...
+# Subtest: T05-09 untrusted query body and authorization do not change or enter response
+ok 9 - T05-09 untrusted query body and authorization do not change or enter response
+  ---
+  duration_ms: 0.1772
+  type: 'test'
+  ...
+# Subtest: T05-10 server environment value is never returned
+ok 10 - T05-10 server environment value is never returned
+  ---
+  duration_ms: 0.23
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69.6261

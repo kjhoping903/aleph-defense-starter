@@ -1,0 +1,91 @@
+{
+  "scope": "local automated tests, not live browser or engine",
+  "results": [
+    {
+      "id": "health-button",
+      "command": "node --test test/health-status.test.mjs",
+      "startedAt": "2026-10-13T05:50:44.245Z",
+      "elapsedSeconds": 0.1290504,
+      "exitCode": 0,
+      "passed": 5,
+      "failed": 0,
+      "logPath": "evidence/health-button.log",
+      "error": null
+    },
+    {
+      "id": "version-info",
+      "command": "node --test test/version-info.test.mjs",
+      "startedAt": "2026-10-13T05:50:44.379Z",
+      "elapsedSeconds": 0.12080790000000002,
+      "exitCode": 0,
+      "passed": 5,
+      "failed": 0,
+      "logPath": "evidence/version-info.log",
+      "error": null
+    },
+    {
+      "id": "all-tests",
+      "command": "node --test",
+      "startedAt": "2026-10-13T05:50:44.500Z",
+      "elapsedSeconds": 1.4991428,
+      "exitCode": 1,
+      "passed": 37,
+      "failed": 5,
+      "logPath": "evidence/all-tests.log",
+      "error": null
+    },
+    {
+      "id": "version-badge",
+      "command": "node --test test/version-badge.test.mjs",
+      "startedAt": "2026-10-13T05:50:45.999Z",
+      "elapsedSeconds": 0.12175829999999996,
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "logPath": "evidence/version-badge.log",
+      "error": null
+    },
+    {
+      "id": "health-fixed-10",
+      "command": "node --test test/t05-health.test.mjs",
+      "startedAt": "2026-10-13T05:50:46.121Z",
+      "elapsedSeconds": 0.11446319999999992,
+      "exitCode": 0,
+      "passed": 10,
+      "failed": 0,
+      "logPath": "evidence/health-fixed-10.log",
+      "error": null
+    },
+    {
+      "id": "device-decider",
+      "command": "node scripts/decider-test.mjs",
+      "startedAt": "2026-10-13T05:50:46.236Z",
+      "elapsedSeconds": 0.05498260000000005,
+      "exitCode": 0,
+      "passed": null,
+      "failed": null,
+      "logPath": "evidence/device-decider.log",
+      "error": null
+    },
+    {
+      "id": "json-parse",
+      "command": "node -e JSON.parse(require('fs').readFileSync('evidence/comparison.json','utf8')); console.log('JSON OK')",
+      "startedAt": "2026-10-13T05:55:12.262Z",
+      "elapsedSeconds": 0.04765629999999999,
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "logPath": "evidence/json-parse.log"
+    },
+    {
+      "id": "utf8-check",
+      "command": "node scripts/check-t05-encoding.mjs",
+      "startedAt": "2026-10-13T05:55:12.311Z",
+      "elapsedSeconds": 0.053691400000000014,
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "logPath": "evidence/utf8-check.log"
+    }
+  ]
+}

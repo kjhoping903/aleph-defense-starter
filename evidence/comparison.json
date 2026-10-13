@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "project": "aleph-defense-starter",
+  "sessions": {
+    "A": {
+      "role": "인수인계서 작성",
+      "startedAt": null,
+      "endedAt": null
+    },
+    "B": {
+      "role": "인수인계서만 보고 이어서 작업",
+      "startedAt": null,
+      "endedAt": null,
+      "independentSessionConfirmed": false
+    }
+  },
+  "fixedChecks": [
+    {
+      "id": "F01",
+      "name": "로그인 성공",
+      "expected": "시험 계정 로그인 후 로그인 상태와 본인 메모 목록 표시",
+      "method": "수동",
+      "execution": "자료실 → 시험 계정 로그인 → 본인 목록 확인",
+      "sessionA": "미실행",
+      "sessionB": "미실행",
+      "note": "실제 계정·브라우저 확인 미실행"
+    },
+    {
+      "id": "F02",
+      "name": "로그인 실패와 비로그인 보호",
+      "expected": "잘못된 시험 비밀번호는 로그인 실패, 비로그인 자료 요청은 401이며 메모 없음",
+      "method": "수동",
+      "execution": "자료실 → 잘못된 시험 비밀번호 로그인 → 로그아웃 상태에서 목록 요청 확인",
+      "sessionA": "미실행",
+      "sessionB": "미실행",
+      "note": "비밀번호·토큰을 로그에 기록하지 않음"
+    },
+    {
+      "id": "F03",
+      "name": "메모 생성",
+      "expected": "본인 시험 메모 생성 후 목록에 표시",
+      "method": "수동",
+      "execution": "로그인 → 새 시험 메모 입력 → 메모 추가",
+      "sessionA": "미실행",
+      "sessionB": "미실행"
+    },
+    {
+      "id": "F04",
+      "name": "메모 조회",
+      "expected": "본인 시험 메모가 목록과 단건 조회에 표시",
+      "method": "수동",
+      "execution": "로그인 → 목록 확인 → 개발자 도구에서 본인 단건 GET 확인",
+      "sessionA": "미실행",
+      "sessionB": "미실행",
+      "note": "소유권 상세 검사는 기존 materials-crud.test.mjs를 별도로 참고"
+    },
+    {
+      "id": "F05",
+      "name": "메모 수정",
+      "expected": "본인 시험 메모 수정 내용이 다시 조회해도 유지",
+      "method": "수동",
+      "execution": "시험 메모 수정 → 목록 재조회 → 수정 내용 비교",
+      "sessionA": "미실행",
+      "sessionB": "미실행"
+    },
+    {
+      "id": "F06",
+      "name": "메모 삭제",
+      "expected": "이번 시험에서 만든 메모만 삭제되고 재조회 시 목록에서 사라짐",
+      "method": "수동",
+      "execution": "시험 메모 삭제 → 목록 재조회 → 해당 단건 404 확인",
+      "sessionA": "미실행",
+      "sessionB": "미실행",
+      "note": "기존 DB 자료는 삭제하지 않음"
+    },
+    {
+      "id": "F07",
+      "name": "기기 판정",
+      "expected": "등록 정상 요청 allow, 미등록 가상 요청 deny",
+      "method": "자동",
+      "execution": "npm.cmd run decider:test",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "note": "실제 기기 접속·심판 판정 아님",
+      "evidence": "evidence/device-decider.log"
+    },
+    {
+      "id": "F08",
+      "name": "DB 재시작 후 보존",
+      "expected": "재시작/재배포 전 만든 시험 메모가 이후에도 동일하게 조회됨",
+      "method": "수동",
+      "execution": "시험 메모 상태 기록 → 승인된 서버 재시작/재배포 → 동일 계정으로 재조회",
+      "sessionA": "미실행",
+      "sessionB": "미실행",
+      "note": "실제 서버 재시작·배포는 승인 후 실행; DB 본문을 공개 증빙에 넣지 않음"
+    },
+    {
+      "id": "F09",
+      "name": "서버 상태 확인 버튼",
+      "expected": "확인 중·정상·실패·시간 초과·중복 클릭 방지·재시도 검사 5개 통과",
+      "method": "자동",
+      "execution": "node --test test/health-status.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "note": "버튼 로직의 자동 검사; 실제 브라우저는 미실행",
+      "evidence": "evidence/health-button.log"
+    },
+    {
+      "id": "F10",
+      "name": "한글 UTF-8 인코딩",
+      "expected": "제출 md/json UTF-8 BOM 없음, 깨진 문자 없음, JSON 파싱 성공",
+      "method": "자동",
+      "execution": "node scripts/check-t05-encoding.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/utf8-check.log"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "id": "V1",
+      "name": "Vercel 환경 변수 있음",
+      "expected": "커밋 7자리와 production/preview/development 반영",
+      "execution": "node --test test/version-info.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/version-info.log"
+    },
+    {
+      "id": "V2",
+      "name": "환경 변수 없음",
+      "expected": "commit과 env가 local",
+      "execution": "node --test test/version-info.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/version-info.log"
+    },
+    {
+      "id": "V3",
+      "name": "민감 정보 비노출",
+      "expected": "정확히 6개 응답 키만 반환, 주입한 비밀 필드·값 없음",
+      "execution": "node --test test/version-info.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/version-info.log"
+    },
+    {
+      "id": "V4",
+      "name": "응답 형식",
+      "expected": "ok true, package 메타데이터 일치, 유효한 ISO checkedAt",
+      "execution": "node --test test/version-info.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/version-info.log"
+    },
+    {
+      "id": "V5",
+      "name": "잘못된 메서드",
+      "expected": "POST 등 405, Allow GET, 오류만 반환",
+      "execution": "node --test test/version-info.test.mjs",
+      "sessionA": "통과",
+      "sessionB": "미실행",
+      "evidence": "evidence/version-info.log"
+    }
+  ],
+  "metrics": {
+    "handoverItemsFilled": 7,
+    "checksPassedA": 3,
+    "checksPassedB": null,
+    "questionsAskedByB": null,
+    "minutesToResume": null
+  },
+  "notes": "사용자가 기존 health 검사 10개 보존 + 전체 범위 F01~F10 별도 정의를 승인함. 이번 작업도 같은 대화에서 진행되어 독립 Session B 증거가 아님. 고정 검사 통과 수는 F01~F10만 집계하며 추가 V 검사를 합산하지 않음. 실제 계정·DB·브라우저·배포는 미실행. 전체 검사 37 통과/5 실패.",
+  "legacyEvidence": {
+    "schema": "t05.comparison.v1",
+    "status": "draft",
+    "startCommit": "b36921075e65e3e6fb6b2977ba972ce1544c4626",
+    "featureCommit": null,
+    "fixedChecksFile": "test/t05-health.test.mjs",
+    "fixedCheckIds": [
+      "T05-01",
+      "T05-02",
+      "T05-03",
+      "T05-04",
+      "T05-05",
+      "T05-06",
+      "T05-07",
+      "T05-08",
+      "T05-09",
+      "T05-10"
+    ],
+    "expectedTotal": 10,
+    "measurementScope": "local handler unit tests; not live deployment",
+    "sessionA": {
+      "status": "passed",
+      "serviceDisplayId": null,
+      "modelDisplayId": null,
+      "timeLimitSeconds": null,
+      "requestLimit": null,
+      "totalWorkDurationSeconds": null,
+      "aiRequestCount": null,
+      "testDurationSeconds": 0.1234699,
+      "testsTotal": 10,
+      "testsPassed": 10,
+      "logPath": "evidence/session-a-tests.tap",
+      "command": "node --test --test-reporter=tap test/t05-health.test.mjs",
+      "nodeVersion": "v24.21.0",
+      "executedAtUtc": "2026-10-13T05:38:16.5991208Z",
+      "fixedChecksSha256": "21aaf0e40c3c7d143ebfef7532474048d6e61e67c21ed061f8ed6b1e72bd5f1c",
+      "npmVersion": "11.19.0",
+      "exitCode": 0
+    },
+    "sessionB": {
+      "status": "not_run",
+      "independentSessionConfirmed": false,
+      "serviceDisplayId": null,
+      "modelDisplayId": null,
+      "timeLimitSeconds": null,
+      "requestLimit": null
+    },
+    "sameConditionsVerified": false,
+    "publicReportUrl": null,
+    "sourceCommitUrl": null,
+    "unauthenticatedAccessVerified": false,
+    "fixedChecksHashNormalization": "UTF-8 text; CRLF normalized to LF before SHA-256"
+  },
+  "currentVerification": "evidence/t05-verification.json",
+  "comparisonConditions": {
+    "sameCommitVerified": false,
+    "sameNodeVersionVerified": false,
+    "healthFixedChecksSha256": "21aaf0e40c3c7d143ebfef7532474048d6e61e67c21ed061f8ed6b1e72bd5f1c",
+    "normalization": "UTF-8 text; CRLF to LF"
+  },
+  "publicReportUrl": null,
+  "sourceCommitUrl": null,
+  "encodingCheck": {
+    "status": "통과",
+    "scope": "handover.md, package.json, package-lock.json, docs md/json, evidence md/json",
+    "log": "evidence/utf8-check.log"
+  }
+}

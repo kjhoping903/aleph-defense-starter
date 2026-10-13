@@ -1,0 +1,13 @@
+✔ V1 Vercel public fields shorten commit and select environment (1.5929ms)
+✔ V2 absent or invalid public fields fall back to local (0.1615ms)
+✔ V3 exact allowlist excludes injected sensitive fields and values (0.7027ms)
+✔ V4 payload identifies package and uses a deterministic valid ISO timestamp (0.4836ms)
+✔ V5 non-GET requests return 405 without version payload (0.2242ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.7553

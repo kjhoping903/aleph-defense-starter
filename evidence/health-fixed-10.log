@@ -1,0 +1,18 @@
+✔ T05-01 GET returns 200 and exact public liveness body (1.1951ms)
+✔ T05-02 GET is not cached (0.5363ms)
+✔ T05-03 GET prevents content sniffing (0.1081ms)
+✔ T05-04 POST is rejected with 405 and only an error (0.1031ms)
+✔ T05-05 PUT is rejected with 405 and only an error (0.0926ms)
+✔ T05-06 DELETE is rejected with 405 and only an error (0.0663ms)
+✔ T05-07 PATCH is rejected with 405 and only an error (0.072ms)
+✔ T05-08 unsupported methods advertise GET and retain protective headers (0.1368ms)
+✔ T05-09 untrusted query body and authorization do not change or enter response (0.1546ms)
+✔ T05-10 server environment value is never returned (0.3033ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.9541
